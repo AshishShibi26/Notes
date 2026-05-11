@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Premium Notes App</title>
+
+    <!-- GOOGLE FONT -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Poppins',sans-serif;
+            background:#eef2ff;
+            min-height:100vh;
+            padding:40px;
+            display:flex;
+            justify-content:center;
+            overflow-x:hidden;
+            position:relative;
+        }
+
+        /* BACKGROUND BLOBS */
+
+        body::before,
+        body::after{
+            content:'';
+            position:absolute;
+            width:350px;
+            height:350px;
+            border-radius:50%;
+            filter:blur(80px);
+            z-index:0;
+        }
+
+        body::before{
+            background:#93c5fd;
+            top:-100px;
+            left:-100px;
+        }
+
+        body::after{
+            background:#c4b5fd;
+            bottom:-100px;
+            right:-100px;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container{
+            width:100%;
+            max-width:1000px;
+            background:rgba(255,255,255,0.75);
+            backdrop-filter:blur(18px);
+            border-radius:30px;
+            padding:40px;
+            box-shadow:0 12px 35px rgba(0,0,0,0.08);
+            position:relative;
+            z-index:1;
+        }
+
+        /* HEADER */
+
+        .heading{
+            text-align:center;
+            margin-bottom:40px;
+        }
+
+        .heading h1{
+            font-size:55px;
+            color:#0f172a;
+            margin-bottom:10px;
+            font-weight:700;
+        }
+
+        .heading p{
+            color:#64748b;
+            font-size:16px;
+        }
+
+        .icon{
+            color:#2563eb;
+            margin-right:10px;
+        }
+
+        /* FORM */
+
+        form{
+            display:flex;
+            flex-direction:column;
+            gap:18px;
+            margin-bottom:45px;
+        }
+
+        input,
+        textarea{
+            padding:18px;
+            border:none;
+            outline:none;
+            border-radius:18px;
+            background:#f8fafc;
+            font-size:15px;
+            border:2px solid transparent;
+            transition:0.3s;
+            box-shadow:0 3px 10px rgba(0,0,0,0.03);
+        }
+
+        input:focus,
+        textarea:focus{
+            border-color:#2563eb;
+            background:white;
+            transform:translateY(-2px);
+        }
+
+        textarea{
+            height:170px;
+            resize:none;
+        }
+
+        input::placeholder,
+        textarea::placeholder{
+            color:#94a3b8;
+        }
+
+        /* ADD BUTTON */
+
+        .add-btn{
+            padding:16px;
+            border:none;
+            border-radius:18px;
+            background:linear-gradient(135deg,#2563eb,#3b82f6);
+            color:white;
+            font-size:15px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            box-shadow:0 8px 18px rgba(37,99,235,0.25);
+        }
+
+        .add-btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0 12px 24px rgba(37,99,235,0.35);
+        }
+
+        /* NOTES GRID */
+
+        .notes-container{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+            gap:25px;
+        }
+
+        /* NOTE CARD */
+
+        .note-card{
+            background:white;
+            padding:26px;
+            border-radius:24px;
+            transition:0.35s;
+            border:1px solid #e2e8f0;
+            box-shadow:0 6px 20px rgba(0,0,0,0.05);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .note-card::before{
+            content:'';
+            position:absolute;
+            width:120px;
+            height:120px;
+            background:#dbeafe;
+            border-radius:50%;
+            top:-50px;
+            right:-50px;
+        }
+
+        .note-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 14px 30px rgba(0,0,0,0.08);
+        }
+
+        .note-card h2{
+            color:#0f172a;
+            margin-bottom:14px;
+            font-size:26px;
+            position:relative;
+            z-index:1;
+        }
+
+        .note-card p{
+            color:#64748b;
+            line-height:1.8;
+            font-size:15px;
+            position:relative;
+            z-index:1;
+        }
+
+        /* DELETE BUTTON */
+
+        .delete-btn{
+            margin-top:18px;
+            padding:12px 16px;
+            border:none;
+            border-radius:14px;
+            background:#ef4444;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        .delete-btn:hover{
+            background:#dc2626;
+            transform:translateY(-2px);
+        }
+
+        /* EMPTY STATE */
+
+        .empty-state{
+            text-align:center;
+            padding:50px;
+            color:#94a3b8;
+        }
+
+        .empty-state i{
+            font-size:60px;
+            margin-bottom:18px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:700px){
+
+            body{
+                padding:20px;
+            }
+
+            .container{
+                padding:25px;
+            }
+
+            .heading h1{
+                font-size:40px;
+            }
+
+            .notes-container{
+                grid-template-columns:1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="heading">
+
+            <h1>
+
+                <i class="fa-solid fa-note-sticky icon"></i>
+
+                Notes App
+
+            </h1>
+
+            <p>
+                Save your thoughts, ideas and important notes beautifully
+            </p>
+
+        </div>
+
+        <!-- FORM -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                placeholder="Enter note title"
+                name="title">
+
+            <textarea
+                placeholder="Write your note here..."
+                name="content"></textarea>
+
+            <button type="submit" class="add-btn">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Note
+
+            </button>
+
+        </form>
+
+        <!-- NOTES -->
+
+        <div class="notes-container">
+
+            {% for i in tasks %}
+
+            <div class="note-card">
+
+                <h2>
+
+                    {{i.title}}
+
+                </h2>
+
+                <p>
+
+                    {{i.content}}
+
+                </p>
+
+                <!-- DELETE BUTTON -->
+
+                <a href="{% url 'delete' i.id %}">
+
+                    <button class="delete-btn">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Delete
+
+                    </button>
+
+                </a>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <h2>No Notes Yet</h2>
+
+                <p>
+                    Add your first note to get started
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
