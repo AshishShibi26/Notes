@@ -161,6 +161,52 @@
             box-shadow:0 12px 24px rgba(37,99,235,0.35);
         }
 
+        /* UPDATE BUTTON */
+
+        .update-btn{
+            padding:12px 16px;
+            border:none;
+            border-radius:14px;
+            background:#f59e0b;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        .update-btn:hover{
+            background:#d97706;
+            transform:translateY(-2px);
+        }
+
+        /* DELETE BUTTON */
+
+        .delete-btn{
+            padding:12px 16px;
+            border:none;
+            border-radius:14px;
+            background:#ef4444;
+            color:white;
+            cursor:pointer;
+            transition:0.3s;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        .delete-btn:hover{
+            background:#dc2626;
+            transform:translateY(-2px);
+        }
+
+        /* ACTION BUTTONS */
+
+        .action-buttons{
+            display:flex;
+            gap:12px;
+            margin-top:18px;
+        }
+
         /* NOTES GRID */
 
         .notes-container{
@@ -212,26 +258,6 @@
             font-size:15px;
             position:relative;
             z-index:1;
-        }
-
-        /* DELETE BUTTON */
-
-        .delete-btn{
-            margin-top:18px;
-            padding:12px 16px;
-            border:none;
-            border-radius:14px;
-            background:#ef4444;
-            color:white;
-            cursor:pointer;
-            transition:0.3s;
-            font-size:14px;
-            font-weight:600;
-        }
-
-        .delete-btn:hover{
-            background:#dc2626;
-            transform:translateY(-2px);
         }
 
         /* EMPTY STATE */
@@ -296,7 +322,39 @@
 
         <!-- FORM -->
 
-        <form method="POST">
+        {% if note %}
+
+        <!-- UPDATE FORM -->
+
+        <form method="POST" action="{% url 'update' note.id %}">
+
+            {% csrf_token %}
+
+            <input
+                type="text"
+                placeholder="Enter note title"
+                name="title"
+                value="{{note.title}}">
+
+            <textarea
+                placeholder="Write your note here..."
+                name="content">{{note.content}}</textarea>
+
+            <button type="submit" class="add-btn">
+
+                <i class="fa-solid fa-pen"></i>
+
+                Update Note
+
+            </button>
+
+        </form>
+
+        {% else %}
+
+        <!-- ADD FORM -->
+
+        <form method="POST" action="/">
 
             {% csrf_token %}
 
@@ -319,11 +377,13 @@
 
         </form>
 
+        {% endif %}
+
         <!-- NOTES -->
 
         <div class="notes-container">
 
-            {% for i in tasks %}
+            {% for i in notes %}
 
             <div class="note-card">
 
@@ -339,19 +399,39 @@
 
                 </p>
 
-                <!-- DELETE BUTTON -->
+                <!-- ACTION BUTTONS -->
 
-                <a href="{% url 'delete' i.id %}">
+                <div class="action-buttons">
 
-                    <button class="delete-btn">
+                    <!-- UPDATE -->
 
-                        <i class="fa-solid fa-trash"></i>
+                    <a href="{% url 'update' i.id %}">
 
-                        Delete
+                        <button class="update-btn" type="button">
 
-                    </button>
+                            <i class="fa-solid fa-pen"></i>
 
-                </a>
+                            Update
+
+                        </button>
+
+                    </a>
+
+                    <!-- DELETE -->
+
+                    <a href="{% url 'delete' i.id %}">
+
+                        <button class="delete-btn" type="button">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                            Delete
+
+                        </button>
+
+                    </a>
+
+                </div>
 
             </div>
 
